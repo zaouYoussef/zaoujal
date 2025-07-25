@@ -31,8 +31,8 @@ export const useAuth = () => {
 const mockUsers: User[] = [
   {
     id: '1',
-    name: 'Dr. Sarah Johnson',
-    email: 'admin@medreads.org',
+    name: 'Dr. Hiba Acharki',
+    email: 'avhib98@gmail.com',
     role: 'admin',
     joinDate: '2024-01-15'
   },
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string): Promise<boolean> => {
     // Mock authentication - in real app, this would call your backend API
     const foundUser = mockUsers.find(u => u.email === email);
-    if (foundUser && password === 'password123') {
+    if (foundUser && password === 'hibahbiba') {
       setUser(foundUser);
       localStorage.setItem('medreads_user', JSON.stringify(foundUser));
       return true;
