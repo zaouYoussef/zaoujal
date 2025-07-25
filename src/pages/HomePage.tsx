@@ -50,7 +50,7 @@ const HomePage = () => {
       id: 3,
       title: 'Caravane Al Ihsane',
       date: '2024-03-28',
-      location: 'Bâtiment Union Étudiante',
+      location: 'Tanger, Maroc',
       image: '/ihsan.png',
       participants: '100+'
     }
