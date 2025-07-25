@@ -19,7 +19,7 @@ const EventsPage: React.FC = () => {
     time: '09h00 - 16h00',
     location: 'Faculté de médecine et de pharmacie de Tanger',
     description: 'Rejoignez-nous pour un événement de dépistage médical complet offrant des examens médicaux gratuits, surveillance de la tension artérielle et consultations de santé pour les communautés défavorisées.',
-    image: './public/depi.jpg',
+    image: '/depi.jpg',
     status: 'upcoming',
     participants: 45,
     maxParticipants: 100,
