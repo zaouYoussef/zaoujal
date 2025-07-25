@@ -102,7 +102,7 @@ const DonatePage: React.FC = () => {
               <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold mb-2">Campagne Nationale 2024</h2>
+                    <h2 className="text-2xl font-bold mb-2">Caravane Nationale 2025</h2>
                     <p className="text-gray-300">Objectif : Santé pour Tous</p>
                   </div>
                   <div className="bg-white bg-opacity-10 rounded-xl p-3">
