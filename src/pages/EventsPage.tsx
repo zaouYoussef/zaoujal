@@ -1,122 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Users, Clock, Filter, Search, Star, Award, TrendingUp, Heart } from 'lucide-react';
+import { dataStore } from '../data'; // Importez dataStore
+import EventDetailsPage from './EventDetailsPage'; // adapte si le chemin est différent
+import EventRegistrationForm from './EventRegistrationForm'; // ajuste le chemin si besoin
+
+
 
 const EventsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [events, setEvents] = useState<Event[]>([]); // État pour les événements
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [registeringEventId, setRegisteringEventId] = useState<number | null>(null);
+
+
+
 
   useEffect(() => {
+    // Charger les événements initiaux
+    setEvents(dataStore.getEvents());
     setIsLoaded(true);
+
+    // S'abonner aux changements
+    const unsubscribe = dataStore.subscribe((newData) => {
+      setEvents(newData.events);
+    });
+
+    return () => unsubscribe(); // Nettoyer l'abonnement
   }, []);
 
-  const events = [
-  {
-    id: 1,
-    title: 'Dépistage Médical Gratuit',
-    date: '2025-09-15',
-    time: '09h00 - 16h00',
-    location: 'Faculté de médecine et de pharmacie de Tanger',
-    description: 'Rejoignez-nous pour un événement de dépistage médical complet offrant des examens médicaux gratuits, surveillance de la tension artérielle et consultations de santé pour les communautés défavorisées.',
-    image: '/depi.jpg',
-    status: 'upcoming',
-    participants: 45,
-    maxParticipants: 100,
-    category: 'Dépistage Médical',
-    priority: 'high',
-    rating: 4.9
-  },
-  {
-    id: 2,
-    title: 'Collecte de Sang',
-    date: '2025-08-22',
-    time: '08h00 - 18h00',
-    location: 'Faculté de médecine et de pharmacie de Tanger',
-    description: 'Événement annuel de don de sang en partenariat avec la Croix-Rouge. Aidez à sauver des vies en donnant votre sang et en encourageant les autres à participer à ce service communautaire vital.',
-    image: 'https://images.pexels.com/photos/6823567/pexels-photo-6823567.jpeg?auto=compress&cs=tinysrgb&w=800',
-    status: 'upcoming',
-    participants: 32,
-    maxParticipants: 150,
-    category: 'Don de Sang',
-    priority: 'high',
-    rating: 4.8
-  },
-  {
-    id: 3,
-    title: 'Caravane Médicale Sanad 2',
-    date: '2024-03-28',
-    time: '14h00 - 17h00',
-    location: 'Azilal, Maroc',
-    description: 'Caravane double dans les quartiers Sanad 2 avec plusieurs spécialités médicales et un encadrement bénévole.',
-    image: '/sanad2.png',
-    status: 'completed',
-    participants: 67,
-    maxParticipants: 80,
-    category: 'Caravane Médicale',
-    priority: 'medium',
-    rating: 4.7
-  },
-  {
-    id: 4,
-    title: 'Caravane Médicale Al Ihsane',
-    date: '2024-02-28',
-    time: '10h00 - 17h00',
-    location: 'Atlas, Maroc',
-    description: 'Caravane médicale organisée par l’association Al Ihsane. Bénéfices : soins généraux, dépistage et orientation médicale gratuite.',
-    image: '/ihsan.png',
-    status: 'completed',
-    participants: 180,
-    maxParticipants: 200,
-    category: 'Caravane Médicale',
-    priority: 'high',
-    rating: 4.9
-  },
-  {
-    id: 5,
-    title: 'Caravane Médicale DIF2',
-    date: '2024-02-20',
-    time: '09h00 - 16h00',
-    location: 'Mengrala, Maroc',
-    description: 'Caravane de santé offrant consultations médicales, dentaires et ophtalmologiques à la population locale.',
-    image: '/dif2.png',
-    status: 'completed',
-    participants: 150,
-    maxParticipants: 180,
-    category: 'Caravane Médicale',
-    priority: 'high',
-    rating: 4.8
-  },
-  {
-    id: 6,
-    title: 'Caravane Médicale Sanad 1',
-    date: '2024-02-10',
-    time: '10h00 - 17h00',
-    location: 'Village X',
-    description: 'Caravane double dans les quartiers Sanad 1 avec plusieurs spécialités médicales et un encadrement bénévole.',
-    image: 'fatip.png',
-    status: 'completed',
-    participants: 240,
-    maxParticipants: 250,
-    category: 'Caravane Médicale',
-    priority: 'high',
-  },
-  {
-    id: 7,
-    title: 'Atelier de Secourisme',
-    date: '2024-02-05',
-    time: '14h00 - 17h00',
-    location: 'Faculté de médecine et de pharmacie de Tanger',
-    description: 'Atelier pratique pour apprendre les gestes de premiers secours : RCR, traitement des blessures, appels d’urgence. Formation certifiante.',
-    image: '/secours.png',
-    status: 'completed',
-    participants: 75,
-    maxParticipants: 80,
-    category: 'Secourisme',
-    priority: 'medium',
-    rating: 4.7
-  }
-];
+
 
 
   const filteredEvents = events.filter(event => {
@@ -169,6 +84,30 @@ const EventsPage: React.FC = () => {
     totalParticipants: events.reduce((sum, e) => sum + e.participants, 0),
     completedEvents: events.filter(e => e.status === 'completed').length
   };
+
+ // Modifiez l'appel à EventDetailsPage
+if (selectedEventId !== null) {
+  const selectedEvent = events.find(e => e.id === selectedEventId);
+  if (!selectedEvent) return null; // Gérer le cas où l'événement n'est pas trouvé
+
+  return (
+    <EventDetailsPage
+      event={selectedEvent} // Passez l'événement complet
+      onBack={() => setSelectedEventId(null)}
+      onRegister={(id) => setRegisteringEventId(id)}
+    />
+  );
+}
+if (registeringEventId !== null) {
+  return (
+    <EventRegistrationForm
+      event={events.find(e => e.id === registeringEventId)!}
+      onBack={() => setRegisteringEventId(null)}
+    />
+  );
+}
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
@@ -327,15 +266,15 @@ const EventsPage: React.FC = () => {
                 <div className="flex gap-3">
                   {event.status === 'upcoming' ? (
                     <>
-                      <button className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                      <button className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-105" onClick={() => setRegisteringEventId(event.id)}>
                         S'inscrire
                       </button>
-                      <button className="flex-1 border-2 border-purple-600 text-purple-600 py-3 px-4 rounded-xl hover:bg-purple-50 transition-all duration-300 text-sm font-semibold">
+                      <button className="flex-1 border-2 border-purple-600 text-purple-600 py-3 px-4 rounded-xl hover:bg-purple-50 transition-all duration-300 text-sm font-semibold" onClick={() => setSelectedEventId(event.id)}>
                         En savoir plus
                       </button>
                     </>
                   ) : (
-                    <button className="w-full bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 py-3 px-4 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-300 text-sm font-semibold">
+                    <button className="w-full bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 py-3 px-4 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-300 text-sm font-semibold" onClick={() => setSelectedEventId(event.id)}>
                       Voir les Résultats
                     </button>
                   )}
@@ -361,7 +300,10 @@ const EventsPage: React.FC = () => {
               Rejoignez notre communauté d'étudiants en médecine et aidez-nous à organiser des événements percutants qui font la différence dans le domaine de la santé.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+              <button onClick={() => {
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll vers le haut en douceur
+  }} className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                 Devenir Bénévole
               </button>
               <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">

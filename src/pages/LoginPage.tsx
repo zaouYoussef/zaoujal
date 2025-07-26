@@ -43,12 +43,7 @@ const LoginPage: React.FC = () => {
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
           Connectez-vous à votre compte
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Ou{' '}
-          <Link to="/register" className="font-medium text-purple-600 hover:text-purple-500">
-            créez un nouveau compte
-          </Link>
-        </p>
+        
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -121,11 +116,7 @@ const LoginPage: React.FC = () => {
                 </label>
               </div>
 
-              <div className="text-sm">
-                <a href="#" className="font-medium text-purple-600 hover:text-purple-500">
-                  Mot de passe oublié ?
-                </a>
-              </div>
+              
             </div>
 
             <div>

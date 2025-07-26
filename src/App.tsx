@@ -5,9 +5,11 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import DonatePage from './pages/DonatePage';
 import EventsPage from './pages/EventsPage';
+import FormPage from './pages/FormPage';
+import FormsOverviewPage from './pages/FormsOverviewPage';
+
 import AboutPage from './pages/AboutPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -24,8 +26,9 @@ function App() {
               <Route path="/events" element={<EventsPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/forms/:formId" element={<FormPage />} />
+              <Route path="/forms" element={<FormsOverviewPage />} />
             </Routes>
           </main>
           <Footer />

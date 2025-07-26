@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { dataStore } from '../data'; // Importez dataStore
+
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +13,13 @@ const Header: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Dans Header.tsx, modifiez la partie des liens de navigation :
+
+
+
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,12 +37,16 @@ const Header: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const navLinks = [
-    { path: '/', label: 'Accueil' },
-    { path: '/donate', label: 'Faire un don' },
-    { path: '/events', label: 'Événements' },
-    { path: '/about', label: 'À propos' }
-  ];
+  // Mettez à jour la partie des liens :
+const navLinks = [
+  { path: '/', label: 'Accueil' },
+  { path: '/donate', label: 'Faire un don' },
+  { path: '/events', label: 'Événements' },
+  { path: '/about', label: 'À propos' },
+  ...(dataStore.getForms().filter(f => f.isActive).length > 0 
+    ? [{ path: '/forms', label: 'Formulaires' }] 
+    : [])
+];
 
   const menuVariants = {
     open: {
@@ -188,7 +201,7 @@ const Header: React.FC = () => {
                   transition={{ repeat: Infinity, duration: 3 }}
                 >
                   <Link
-                    to="/register"
+                    to="/events"
                     className="bg-gradient-to-r from-purple-600 to-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 transition-all duration-200 shadow-md"
                   >
                     Rejoignez-nous

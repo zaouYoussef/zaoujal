@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { DollarSign, Users, Target, Heart, Shield, CheckCircle, Copy, Award, Calendar, MapPin, Phone, Mail, ExternalLink, CreditCard, Building, Smartphone, TrendingUp, Lock, Star } from 'lucide-react';
+import { siteData } from '../data';
 
+  
 const DonatePage: React.FC = () => {
+
+
+  
+
   const [copied, setCopied] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [activeMethod, setActiveMethod] = useState<string>('bank');
 
+  const {
+    amount = 0,
+    goal = 0,
+    campaignTitle = "Campagne de dons",
+    campaignSlogan = "Objectif",
+    recentContributions = []
+  } = siteData.donate || {};
+  const donorCount = recentContributions?.length || 0;
+
   const donationStats = {
-    totalRaised: 15747,
-    donorCount: 1342,
-    goal: 60000,
+    totalRaised: amount,
+    donorCount, // Utiliser la valeur sécurisée
+    goal,
     beneficiaries: 8500
   };
 
@@ -38,12 +53,7 @@ const DonatePage: React.FC = () => {
     { amount: 1000, title: "Mission Complète", description: "Village entier couvert", color: "bg-amber-500" }
   ];
 
-  const recentContributions = [
-    { name: 'Dr. Rachid Benali', amount: 2500, time: '2h', verified: true, type: 'Médecin' },
-    { name: 'TechCorp SARL', amount: 5000, time: '4h', verified: true, type: 'Entreprise' },
-    { name: 'Fondation Al-Khair', amount: 10000, time: '1j', verified: true, type: 'Fondation' },
-    { name: 'Anonyme', amount: 750, time: '2j', verified: false, type: 'Particulier' }
-  ];
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -102,8 +112,8 @@ const DonatePage: React.FC = () => {
               <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold mb-2">Caravane Nationale 2025</h2>
-                    <p className="text-gray-300">Objectif : Santé pour Tous</p>
+                    <h2 className="text-2xl font-bold mb-2">{campaignTitle}</h2>
+                    <p className="text-gray-300">{campaignSlogan}</p>
                   </div>
                   <div className="bg-white bg-opacity-10 rounded-xl p-3">
                     <TrendingUp className="h-6 w-6" />
@@ -408,7 +418,7 @@ const DonatePage: React.FC = () => {
               </div>
               
               <div className="p-6 space-y-4">
-                {recentContributions.map((contribution, index) => (
+                {(recentContributions || []).map((contribution, index) => (
                   <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
@@ -471,10 +481,7 @@ const DonatePage: React.FC = () => {
                 </div>
               </div>
               
-              <button className="w-full bg-white text-gray-900 font-semibold py-4 px-6 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center">
-                <ExternalLink className="h-5 w-5 mr-2" />
-                Contacter le Support
-              </button>
+              
             </div>
           </div>
         </div>
@@ -539,10 +546,13 @@ const DonatePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <div className="bg-white bg-opacity-10 rounded-xl px-6 py-3">
                 <span className="font-semibold">Prochain objectif : </span>
-                <span className="text-blue-200">25,000 MAD d'ici fin du mois</span>
+                <span className="text-blue-200">{goal.toLocaleString()} MAD d'ici fin du mois</span>
               </div>
               <button 
-                onClick={() => setShowSuccess(true)}
+                onClick={() => {
+    setShowSuccess(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll vers le haut en douceur
+  }}
                 className="bg-white text-blue-600 font-bold px-8 py-4 rounded-xl hover:bg-blue-50 transition-colors flex items-center text-lg"
               >
                 <Heart className="h-5 w-5 mr-2" />
@@ -553,77 +563,7 @@ const DonatePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Professional Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid md:grid-cols-4 gap-10">
-            
-            {/* Organization Info */}
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-xl">
-                  <Heart className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold">MedReads</h3>
-                  <p className="text-gray-400">Association Caritative Certifiée</p>
-                </div>
-              </div>
-              <p className="text-gray-300 leading-relaxed mb-6">
-                Depuis 2014, nous œuvrons pour l'amélioration de l'accès aux soins de santé 
-                dans les régions les plus reculées du Maroc. Notre mission : garantir des soins 
-                de qualité pour tous, sans distinction.
-              </p>
-              <div className="flex items-center space-x-4 text-sm text-gray-400">
-                <span>Agrément ONG #MA-2014-0156</span>
-                <span>•</span>
-                <span>Certifié ISO 9001</span>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-bold mb-6 text-white text-lg">Liens Rapides</h4>
-              <ul className="space-y-3 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">À Propos</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Nos Missions</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Rapports Annuels</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Témoignages</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Partenaires</a></li>
-              </ul>
-            </div>
-
-            {/* Legal & Contact */}
-            <div>
-              <h4 className="font-bold mb-6 text-white text-lg">Légal & Contact</h4>
-              <ul className="space-y-3 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Mentions Légales</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Politique de Confidentialité</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Conditions d'Usage</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Presse</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Devenir Partenaire</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-10 pt-10 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">
-              © 2024 Association MedReads. Tous droits réservés.
-            </p>
-            <div className="flex items-center space-x-6 mt-6 md:mt-0">
-              <span className="text-gray-400">Suivez-nous :</span>
-              <div className="flex space-x-3">
-                <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors">
-                  <ExternalLink className="h-5 w-5 text-gray-400" />
-                </a>
-                <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Award, Globe, Users, Mail, Phone, MapPin, Linkedin, ChevronDown, ArrowRight, Calendar, Star, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { dataStore } from '../data'; // Ajoutez cette importation
+
 
 const AboutPage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeValue, setActiveValue] = useState(0);
+  const teamMembers = dataStore.getData().about.teamMembers;
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -14,68 +18,7 @@ const AboutPage: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const teamMembers = [
-    {
-      name: 'Dr. Acharki Hiba',
-      role: 'Présidente & Fondatrice',
-      university: 'Faculté de Médecine de Tanger',
-      year: '2e année',
-      image: '/hiba.jpg',
-      bio: "Passionnée par la santé communautaire et l'éducation médicale. A fondé MedReads pour rapprocher les connaissances médicales du service à la communauté.",
-      social: { linkedin: '#' },
-      expertise: ['Leadership', 'Santé Communautaire', 'Innovation Médicale']
-    },
-    {
-      name: 'Dr. Tayou Imane',
-      role: 'Vice-Présidente',
-      university: 'Faculté de Médecine de Tanger',
-      year: '2e année',
-      image: '/iman.jpg',
-      bio: "Spécialisée dans les initiatives de santé publique et la coordination d'événements. Dirige nos programmes de sensibilisation communautaire avec engagement et expertise.",
-      social: { linkedin: '#' },
-      expertise: ['Santé Publique', 'Gestion d\'Événements', 'Communication']
-    },
-    {
-      name: 'Dr. Kasmaoui Ayoub',
-      role: 'Directeur des Programmes',
-      university: 'Faculté de Médecine de Tanger',
-      year: '5e année',
-      image: '/ayoub.jpg',
-      bio: "Supervise tous les programmes caritatifs et veille à la qualité des soins. Expert en médecine d'urgence et en santé communautaire.",
-      social: { linkedin: '#' },
-      expertise: ['Médecine d\'Urgence', 'Gestion de Programmes', 'Qualité des Soins']
-    },
-    {
-      name: 'Dr. Lamyae',
-      role: 'Trésorière',
-      university: 'Faculté de Médecine de Tanger',
-      year: '2e année',
-      image: '/lamyae.jpg',
-      bio: "Gère les opérations financières et le suivi des dons. Assure la transparence et l'utilisation efficace des fonds pour un impact communautaire maximal.",
-      social: { linkedin: '#' },
-      expertise: ['Gestion Financière', 'Comptabilité', 'Audit']
-    },
-    {
-      name: 'Dr. EL Mesbahi Fatima Zahrae',
-      role: 'Directrice de la Communication',
-      university: 'Faculté de Médecine de Tanger',
-      year: '2e année',
-      image: '/fati.jpg',
-      bio: "Gère la communication, les réseaux sociaux et l'engagement communautaire. Passionnée par l'éducation à la santé et les campagnes de sensibilisation.",
-      social: { linkedin: '#' },
-      expertise: ['Communication Digitale', 'Marketing Médical', 'Relations Publiques']
-    },
-    {
-      name: 'Dr. Reem',
-      role: 'Conseillère Médicale',
-      university: 'Faculté de Médecine de Tanger',
-      year: '2e année',
-      image: '/reem.png',
-      bio: 'Fournit des conseils médicaux et garantit que tous les programmes respectent les normes professionnelles. Spécialiste en médecine interne et en soins préventifs.',
-      social: { linkedin: '#' },
-      expertise: ['Médecine Interne', 'Soins Préventifs', 'Éthique Médicale']
-    }
-  ];
+  
 
   const values = [
     {
@@ -210,7 +153,7 @@ const AboutPage: React.FC = () => {
                 Découvrir nos programmes
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button onClick={() => navigate('/register')} className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-purple-900 transition-all duration-300">
+              <button onClick={() => navigate('/events')} className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-purple-900 transition-all duration-300">
                 Nous rejoindre
               </button>
             </div>
@@ -489,7 +432,7 @@ const AboutPage: React.FC = () => {
           </div>
 
           <div className="text-center mt-16">
-            <button onClick={() => navigate('/register')} className="group bg-white text-purple-900 px-12 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl">
+            <button onClick={() => navigate('/events')} className="group bg-white text-purple-900 px-12 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl">
               Rejoindre MedReads
               <ArrowRight className="inline-block ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </button>

@@ -3,10 +3,86 @@ import { Heart, Calendar, Users, DollarSign, ArrowRight, Award, Globe, HandHeart
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { LogoIcon } from '../../logo.jpg';
+import EventDetailsPage from './EventDetailsPage'; // Importez votre composant de détail
+
+import { dataStore } from '../data';
+
+
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [data, setData] = useState(dataStore.getHomeSettings());
+  const [events, setEvents] = useState(dataStore.getEvents());
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+
+  
+
+  // Remplacer cette partie :
+const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
+
+useEffect(() => {
+  // Charge les événements vedettes initiaux
+  const featuredIds = dataStore.getHomeSettings().featuredEvents;
+  const initialEvents = dataStore.getEvents()
+    .filter(event => featuredIds.includes(event.id));
+  setFeaturedEvents(initialEvents);
+
+  // S'abonne aux changements
+  const unsubscribe = dataStore.subscribe(() => {
+    const updatedFeaturedIds = dataStore.getHomeSettings().featuredEvents;
+    const updatedEvents = dataStore.getEvents()
+      .filter(event => updatedFeaturedIds.includes(event.id));
+    setFeaturedEvents(updatedEvents);
+  });
+
+  return unsubscribe;
+}, []);
+
+// Par cette nouvelle implémentation :
+const [displayEvents, setDisplayEvents] = useState<Event[]>([]);
+
+useEffect(() => {
+  // Charge les 3 premiers événements initiaux
+  const initialEvents = dataStore.getEvents().slice(0, 3);
+  setDisplayEvents(initialEvents);
+
+  // S'abonne aux changements
+  const unsubscribe = dataStore.subscribe(() => {
+    const updatedEvents = dataStore.getEvents().slice(0, 3);
+    setDisplayEvents(updatedEvents);
+  });
+
+  return unsubscribe;
+}, []);
+  // Événements à afficher (vedettes ou par défaut)
+  
+
+
+
+
+
+
+useEffect(() => {
+  // Initialisez avec les événements vedettes actuels
+  const initialEvents = dataStore.getEvents()
+    .filter(event => event.isFeatured)
+    .slice(0, 3);
+  setFeaturedEvents(initialEvents);
+
+  // Abonnez-vous aux changements
+  const unsubscribe = dataStore.subscribe(() => {
+    const updatedEvents = dataStore.getEvents()
+      .filter(event => event.isFeatured)
+      .slice(0, 3);
+    setFeaturedEvents(updatedEvents);
+  });
+
+  return unsubscribe;
+}, []);
+
+
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -55,30 +131,8 @@ const HomePage = () => {
       participants: '100+'
     }
   ];
-
-  const recentActivities = [
-    {
-      title: '15 000 DH collectés pour la prochaine caravane',
-      description: 'Notre récente campagne de collecte de fonds a dépassé toutes les attentes avec une mobilisation exceptionnelle',
-      date: '28 Février 2024',
-      type: 'fundraising',
-      impact: 'Fort'
-    },
-    {
-      title: '200+ Bénévoles pour la Vaccination',
-      description: 'La réponse communautaire a été remarquable pour notre initiative de vaccination contre la grippe saisonnière',
-      date: '20 Février 2024',
-      type: 'volunteering',
-      impact: 'Élevé'
-    },
-    {
-      title: 'Partenariat avec Clinique Locale',
-      description: 'Collaboration établie pour des programmes réguliers de contrôles médicaux préventifs',
-      date: '15 Février 2024',
-      type: 'partnership',
-      impact: 'Stratégique'
-    }
-  ];
+const recentActivities = (dataStore.getRecentActivities() || []).filter(a => a.isActive);
+ 
 
   const stats = [
     { icon: Users, label: 'Membres Actifs', value: '180+', growth: '+15%' },
@@ -188,8 +242,8 @@ const HomePage = () => {
                   <Heart className="ml-2 h-5 w-5 group-hover:animate-pulse" />
                 </span>
               </button>
-              <button   onClick={() => navigate('/register')} className="group border-2 border-white/80 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-purple-700 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
-                <span className="flex items-center justify-center">
+              <button   onClick={() => navigate('/events')} className="group border-2 border-white/80 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-purple-700 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
+                <span className="flex items-center justify-center" >
                   Rejoindre Notre Mission
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
@@ -353,7 +407,7 @@ const HomePage = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {upcomingEvents.map((event, index) => (
+            {displayEvents.map((event, index) => (
               <div 
                 key={event.id} 
                 className={`group transition-all duration-1000 delay-${index * 200} ${
@@ -382,7 +436,7 @@ const HomePage = () => {
                       <span className="font-medium">{new Date(event.date).toLocaleDateString('fr-FR')}</span>
                     </div>
                     <p className="text-gray-600 mb-6">{event.location}</p>
-                    <button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25">
+                    <button onClick={() => setSelectedEventId(event.id)} className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25">
                       En Savoir Plus
                     </button>
                   </div>
@@ -390,9 +444,20 @@ const HomePage = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div>      
+        
       </section>
-
+      {/* Modal pour les détails de l'événement */}
+      {selectedEventId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <EventDetailsPage 
+              eventId={selectedEventId}
+              onClose={() => setSelectedEventId(null)} 
+            />
+          </div>
+        </div>
+      )}
       {/* Activités Récentes */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -540,8 +605,8 @@ const HomePage = () => {
             <div className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-400 ${
               isVisible['cta-section'] ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}>
-              <button onClick={() => navigate('/register')} className="group bg-white text-purple-700 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl">
-                <span className="flex items-center justify-center">
+              <button onClick={() => navigate('/events')} className="group bg-white text-purple-700 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+                <span className="flex items-center justify-center" onClick={() => navigate('/events')}>
                   Devenir Membre
                   <Users className="ml-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 </span>
